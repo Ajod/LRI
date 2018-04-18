@@ -1,5 +1,5 @@
 from unittest import TestCase
-import accessGetter
+import dataencryptor
 from pathlib import Path
 import os
 
@@ -8,8 +8,8 @@ print("======================\nStarting unit tests...")
 
 class TestAccessGetter(TestCase):
     def test_initAccessgetter(self):
-        self.assertIsNotNone(accessGetter.AccessGetter())
-        self.assertIsNotNone(accessGetter.AccessGetter("Test.json"))
+        self.assertIsNotNone(dataencryptor.DataEncryptor())
+        self.assertIsNotNone(dataencryptor.DataEncryptor("Test.json"))
 
     def test_getDict(self):
         handle = open(str(Path.home()) + "/.ssh/encrypted-data/unittest.json", 'w+')
@@ -18,7 +18,7 @@ class TestAccessGetter(TestCase):
     \"Test2\":\"Value2\",\
     \"Test3\":\"AbsolutelyNotValue3\"}")
         handle.close()
-        ag = accessGetter.AccessGetter("./unittest.json")
+        ag = dataencryptor.DataEncryptor("./unittest.json")
         dict = ag.getDict()
         self.assertIsNotNone(dict)
         self.assertTrue(dict["Test3"] == "AbsolutelyNotValue3")

@@ -1,8 +1,8 @@
-import accessGetter
+import dataencryptor
 import mystreamlistener
 
 """
-    Instantiate an AccessGetter searching for 
+    Instantiate an DataEncryptor searching for 
     ~/.ssh/encrypted-data/twitter.json or twitter.encrypted.json
     
     Get a dictionary of login data from json file
@@ -12,7 +12,7 @@ import mystreamlistener
     Connect to the Twitter API and start listening.
 """
 
-accessGetter = accessGetter.AccessGetter("twitter")
+accessGetter = dataencryptor.DataEncryptor("twitter")
 
 logindata = accessGetter.getDict()
 

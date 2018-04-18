@@ -2,10 +2,11 @@ import os
 import json
 import time
 import transpositionCipher
+import glob
 from pathlib import Path
 
 
-class AccessGetter:
+class DataEncryptor:
     targetFile = None
     jsonDataDict = None
     jsonFilename = ".projectData.json"
@@ -56,12 +57,12 @@ class AccessGetter:
 
         :example:
         >>>
-        accessgetter = AccessGetter("notEncryptedFile.json")
+        accessgetter = DataEncryptor("notEncryptedFile.json")
         dict = accessgetter.getDict() # Creates notEncryptedFile.encrypted.json
 
         dict = accessgetter.getDict(".twitter.encrypted.json")
 
-        Note: AccessGetter.filename is replaced when calling getDict with a filename
+        Note: DataEncryptor.filename is replaced when calling getDict with a filename
 
         """
 
@@ -70,7 +71,7 @@ class AccessGetter:
             self.jsonDataDict = None
             filename = filename.lower()
         elif not filename and not self.jsonDataDict and not self.jsonFilename:
-            raise RuntimeError("AccessGetter.getDict: failed to provide valid .json file to get Dict from")
+            raise RuntimeError("DataEncryptor.getDict: failed to provide valid .json file to get Dict from")
         if self.jsonDataDict:
             return self.jsonDataDict
         else:
@@ -79,7 +80,7 @@ class AccessGetter:
     def __getDictFromJson(self):
         if not os.path.exists(self.path + '/' + self.jsonFilename + ".json") and not\
                 os.path.exists(self.path + '/' + self.jsonFilename + ".encrypted.json"):
-            raise RuntimeError("AccessGetter.getDict: failed to provide valid .json file to get Dict from")
+            raise RuntimeError("DataEncryptor.getDict: failed to provide valid .json file to get Dict from")
 
         if os.path.exists(self.path + '/' + self.jsonFilename + ".json"):
             jsonfile = open(self.path + '/' + self.jsonFilename + ".json")
@@ -105,9 +106,42 @@ class AccessGetter:
         self.__encryptData(readString, outputFileName)
         return self.jsonDataDict
 
-ag = AccessGetter(None, None, True)
-dict = ag.getDict("twitter")
+    def seekJson(self):
+        files = sorted(glob.glob(self.path + "/*"))
+        print(files)
+        cnt = 0
+        for filename in files:
+            if filename.endswith(".encrypted.json"):
+                pass
+            elif filename.endswith(".json"):
+                cnt -= 1000
+                handle = open(filename, 'r')
+                text = handle.read()
+                handle.close()
+                outputname = filename.replace(".json", ".encrypted.json")
+                self.__encryptData(text, outputname)
+                os.remove(filename)
+
+        if cnt == 0:
+            for filename in files:
+                if filename.endswith(".encrypted.json"):
+                    print("Modifying " + filename)
+                    handle = open(filename, "r")
+                    text = transpositionCipher.decrypt(handle.read(), 7)
+                    print("Text found : ", text)
+                    handle.close()
+                    outputname = filename.replace(".encrypted.json", ".json")
+                    print("Outputfile : " + outputname)
+                    outputhandle = open(outputname, "w+")
+                    outputhandle.write(text)
+                    outputhandle.close()
+
 
 # TODO: Code a better encryption/decryption system
 # TODO: Write doc/comments
 # TODO: Unit testing via template https://github.com/hayj/SystemTools/blob/master/systemtools/test/basics.py
+
+
+if __name__ == "__main__":
+    de = DataEncryptor()
+    de.seekJson()
