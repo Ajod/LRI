@@ -2,6 +2,14 @@ import tweepy
 
 
 class LRITwitterListener(tweepy.StreamListener):
+
+    consumerSecret = None
+    consumerID = None
+    accessToken = None
+    accessTokenSecret = None
+    api = None
+    auth = None
+
     def on_status(self, status):
         print(status)
 
@@ -15,24 +23,20 @@ class LRITwitterListener(tweepy.StreamListener):
     def on_data(self, raw_data):
         print(raw_data)
 
+    def setLoginData(self, consumerid, consumersecret, accesstoken=None, accesstokensecret=None):
+        self.consumerID = consumerid
+        self.consumerSecret = consumersecret
+        self.accessToken = accesstoken
+        self.accessTokenSecret = accesstokensecret
+        self.auth = tweepy.OAuthHandler(self.consumerID, self.consumerSecret)
 
-mystreamListener = LRITwitterListener()
+    def connectAPI(self):
+        if not self.consumerID or not self.consumerSecret or not self.accessToken or not self.accessTokenSecret:
+            raise RuntimeError("A required authentication token wasn't set by the user")
+        self.auth.set_access_token(self.accessToken, self.accessTokenSecret)
+        self.api = tweepy.API(self.auth)
 
-auth = tweepy.OAuthHandler("dq9tBwtaU0EviD0mKTle4cNgk", "wrKMFtyjNpKHmfbbeMVa3T5NsQHFsmSdX2VyP0CdyNhbB0nr84")
-try:
-    redirect_url = auth.get_authorization_url()
-except tweepy.TweepError:
-    print('Error! Failed to get request token')
-
-
-auth.set_access_token("937684721164869632-GOOZrgIe5RfKISuh1tMBVg1RJDkgFap", "CBSEnDhrrD7TE1uAqxUTUUcXdwACuXwRU4YhAIVA5bGTu")
-
-
-api = tweepy.API(auth)
-
-mystream = tweepy.Stream(auth=api.auth, listener=mystreamListener)
-mystream.timeout = 60
-mystream.userstream(encoding='utf-8')
-
-
-exit(0)
+    def startListening(self):
+        mystream = tweepy.Stream(self.api.auth, listener=self)
+        mystream.timeout = 60
+        mystream.userstream(encoding='utf-8')
