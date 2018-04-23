@@ -1,14 +1,19 @@
 import tweepy
+import os
+import sys
 
 
 class LRITwitterListener(tweepy.StreamListener):
 
     consumerSecret = None
-    consumerID = None
+    consumerKey = None
     accessToken = None
     accessTokenSecret = None
     api = None
     auth = None
+    output = None
+    tweetmaxnumber = 0
+    currenttweets = 0
 
     def on_status(self, status):
         print(status)
@@ -21,17 +26,30 @@ class LRITwitterListener(tweepy.StreamListener):
         print("Connected !")
 
     def on_data(self, raw_data):
-        print(raw_data)
+        if self.tweetmaxnumber > 0:
+            if self.currenttweets >= self.tweetmaxnumber:
+                raise RuntimeWarning("Specified number of tweets achieved")
+        if self.output is None:
+            print(raw_data)
+        else:
+            self.output.write(raw_data)
+        self.currenttweets += 1
 
-    def setLoginData(self, consumerid, consumersecret, accesstoken=None, accesstokensecret=None):
-        self.consumerID = consumerid
+    def setOutput(self, fd):
+        self.output = fd
+
+    def setMaxTweets(self, max):
+        self.tweetmaxnumber = max
+
+    def setLoginData(self, consumerkey, consumersecret, accesstoken=None, accesstokensecret=None):
+        self.consumerKey = consumerkey
         self.consumerSecret = consumersecret
         self.accessToken = accesstoken
         self.accessTokenSecret = accesstokensecret
-        self.auth = tweepy.OAuthHandler(self.consumerID, self.consumerSecret)
+        self.auth = tweepy.OAuthHandler(self.consumerKey, self.consumerSecret)
 
     def connectAPI(self):
-        if not self.consumerID or not self.consumerSecret or not self.accessToken or not self.accessTokenSecret:
+        if not self.consumerKey or not self.consumerSecret or not self.accessToken or not self.accessTokenSecret:
             raise RuntimeError("A required authentication token wasn't set by the user")
         self.auth.set_access_token(self.accessToken, self.accessTokenSecret)
         self.api = tweepy.API(self.auth)

@@ -1,5 +1,5 @@
-import dataencryptor
-import mystreamlistener
+from lri import dataencryptor
+from lri import mystreamlistener
 
 """
     Instantiate an DataEncryptor searching for 
