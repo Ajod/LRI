@@ -1,0 +1,11 @@
+MANIFEST.in
+README.md
+pip-selfcheck.json
+requirements.txt
+setup.py
+wm-conf.json
+lri/__init__.py
+lri.egg-info/PKG-INFO
+lri.egg-info/SOURCES.txt
+lri.egg-info/dependency_links.txt
+lri.egg-info/top_level.txt

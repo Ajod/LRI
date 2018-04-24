@@ -1,0 +1,11 @@
+[console_scripts]
+dbyrow = datatools.cli:byrow
+dcompute = datatools.cli:compute
+ddescribe = datatools.cli:describe
+dgrep = datatools.cli:grep
+dj2gj = datatools:json2geojson
+djoin = datatools.cli:join
+djsonexplorer = datatools.cli:jsonexplorer
+drandom = datatools.cli:drandom
+dunique = datatools.cli:dunique
+
