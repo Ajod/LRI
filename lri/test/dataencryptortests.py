@@ -28,21 +28,6 @@ class TestDataEncryptor(TestCase):
         self.assertTrue(dict["Test3"] == "AbsolutelyNotValue3",
                         "Values contained in Dict weren't do not match expected results")
 
-    def testEncryption(self):
-        de = dataencryptor.DataEncryptor()
-        with open("./testencryption.json", "w+") as handle:
-            handle.write("This is a test")
-            handle.close()
-
-# Invalidated by last commit.         with open("./testencryption.json") as handle:
-# Invalidated by last commit.             de._DataEncryptor__encryptData(handle.read(), "./testencryption.encrypted.zip")
-# Invalidated by last commit.
-# Invalidated by last commit.             # Change the following statement
-# Invalidated by last commit.             # if the encryption method has been modified
-# Invalidated by last commit.         with open("./testencryption.encrypted.zip") as handle:
-# Invalidated by last commit.             self.assertTrue(handle.read() == "T hai st eisst",
-# Invalidated by last commit.                             "Message \"This is a test\" was properly encrypted")
-
     def testSeekJsonScript(self):
         de = dataencryptor.DataEncryptor()
         if not os.path.isdir(de.dataDir + "/testFolder"):

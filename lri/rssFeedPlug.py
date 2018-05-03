@@ -52,7 +52,11 @@ class RssFeedPlug:
 
 # TODO: Functions to build a list of Packets from each RSS feed (in callback from async call ?)
 
-print(RssFeedPlug.getPunctualFeed("http://9gag-rss.com/api/rss/get?code=9GAGFresh&format=2"))
-rfp = RssFeedPlug("http://9gag-rss.com/api/rss/get?code=9GAGFresh&format=2", 10)
-rfp.getConstantFeed()
+import json
+
+data = RssFeedPlug.getPunctualFeed("http://www.lefigaro.fr/rss/figaro_actualites.xml")
+with open('rssflux.json', 'w+') as fd:
+    json.dump(data, fd)
+#rfp = RssFeedPlug("http://www.lefigaro.fr/rss/figaro_actualites.xml", 10)
+#rfp.getConstantFeed()
 exit(0)
